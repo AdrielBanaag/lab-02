@@ -29,17 +29,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.listycity.ui.theme.ListyCityTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() { // main function
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val cityRepository = CityRepository()
         setContent {
             ListyCityTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding -> // layout of the app
                     CityListScreen(
-                        cities = cityRepository.cities,
-                        onAddCity = {cityRepository.addCity(it)},
+                        cities = cityRepository.cities,             // let cities be the ones in repository
+                        onAddCity = {cityRepository.addCity(it)},   // it gets the parameter anyway
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, modifier: Modifier = Modifier) { // useless for our purposes
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -58,28 +58,33 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun GreetingPreview() { // also useless for our purposes
     ListyCityTheme {
         Greeting("Android")
     }
 }
 
 class CityRepository { // where we store the cities
-    private val _cities = mutableStateListOf(
+    private val _cities = mutableStateListOf( // our initial round of cities
         "Edmonton", "Vancouver", "Moscow", "Sydney", "Berlin", "Vienna",
         "Tokyo", "Beijing", "Osaka", "New Delhi"
     )
 
-    val cities: List<String> get() =  _cities
+    val cities: List<String> get() =  _cities   // city list loaded with our initial round
 
-    fun addCity(city: String) {
+    fun addCity(city: String) {         // when fed city name, adds to cities
         _cities.add(city)
+    }
+
+    // function that deletes cities
+    fun deleteCity(city: String) {      // when fed city name, removes from cities
+        _cities.remove(city)
     }
 }
 
 @Composable
-fun CityListScreen (
-    cities: List<String>,
+fun CityListScreen (                    // the actual app layout
+    cities: List<String>,               // let cities be a list of strings
     onAddCity: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,7 +101,7 @@ fun CityListScreen (
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Button(
+            Button( // the button that adds cities
                 onClick = {
                     if (newCityName.isNotBlank()) {
                         onAddCity(newCityName)
@@ -104,11 +109,25 @@ fun CityListScreen (
                     }
                 }
             ) {
+                Text("Add")
+            }
 
+            // Button text code based off of the filled button code below:
+            // https://developer.android.com/develop/ui/compose/components/button
+
+            Button( // the button that deletes cities
+                onClick = {
+                    if (newCityName.isNotBlank()) {
+                        onAddCity(newCityName)
+                        newCityName = ""
+                    }
+                }
+            ) {
+                Text("Delete")
             }
         }
 
-        LazyColumn(modifier = modifier.fillMaxSize()) {
+        LazyColumn(modifier = modifier.fillMaxSize()) { // displays the cities as city row objects
             items(cities) { city ->
                 CityRow(city = city)
             }
@@ -117,7 +136,7 @@ fun CityListScreen (
 }
 
 @Composable
-fun CityRow(city: String) {
+fun CityRow(city: String) { // when fed city name, displays city
     Text(
         text = city,
         fontSize = 28.sp,
