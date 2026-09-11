@@ -6,6 +6,7 @@
 
 ## References and Resources
 - Lab 2 instructions
+- Button text code: https://developer.android.com/develop/ui/compose/components/button
 
 ## Verbal Collaboration
 - `N/A`
