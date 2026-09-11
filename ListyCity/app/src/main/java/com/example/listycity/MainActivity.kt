@@ -39,8 +39,10 @@ class MainActivity : ComponentActivity() { // main function
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding -> // layout of the app
                     CityListScreen(
                         cities = cityRepository.cities,             // let cities be the ones in repository
-                        onAddCity = {cityRepository.addCity(it)},   // it gets the parameter anyway
-                        modifier = Modifier.padding(innerPadding)
+                        onAddCity = {cityRepository.addCity(it)},        // it gets the parameter anyway
+                        onDeleteCity = {cityRepository.deleteCity(it)},  // it gets the parameter anyway
+                        modifier = Modifier
+                            .padding(innerPadding)
                     )
                 }
             }
@@ -86,40 +88,45 @@ class CityRepository { // where we store the cities
 fun CityListScreen (                    // the actual app layout
     cities: List<String>,               // let cities be a list of strings
     onAddCity: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var newCityName by remember { mutableStateOf("") }
+    var newCityName by remember { mutableStateOf("") } // city to be added/deleted
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) { // column that makes up our app
         Row(modifier = Modifier.padding(16.dp)) {
-            OutlinedTextField(
-                value = newCityName,
-                onValueChange = {newCityName = it},
-                label = {Text("City name")},
+            OutlinedTextField( // search bar that allows us to add cities
+                value = newCityName, // let newCityName be the value of the textbox
+                onValueChange = {newCityName = it}, // and updatable by user entry
+                label = {Text("Enter city to be added/deleted")}, // default value
                 modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier
+                .width(4.dp))
 
             Button( // the button that adds cities
                 onClick = {
-                    if (newCityName.isNotBlank()) {
-                        onAddCity(newCityName)
-                        newCityName = ""
+                    if (newCityName.isNotBlank()) { // if we have city name
+                        onAddCity(newCityName)  // add to cities
+                        newCityName = ""        // then reset
                     }
                 }
             ) {
                 Text("Add")
             }
 
+            Spacer(modifier = Modifier
+                .width(4.dp))
+
             // Button text code based off of the filled button code below:
             // https://developer.android.com/develop/ui/compose/components/button
 
             Button( // the button that deletes cities
                 onClick = {
-                    if (newCityName.isNotBlank()) {
-                        onAddCity(newCityName)
-                        newCityName = ""
+                    if (newCityName.isNotBlank()) { // if we have city name
+                        onDeleteCity(newCityName)   // delete city
+                        newCityName = ""            // reset
                     }
                 }
             ) {
@@ -140,6 +147,8 @@ fun CityRow(city: String) { // when fed city name, displays city
     Text(
         text = city,
         fontSize = 28.sp,
-        modifier = Modifier.fillMaxWidth().padding(horizontal=18.dp, vertical=14.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal=18.dp, vertical=14.dp)
     )
 }
